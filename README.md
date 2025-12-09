@@ -27,7 +27,7 @@ Node Controller - It is responsible for monitoring the status of the nodes and t
 
 Replication Controller - Reponsible for monitoring the status of the replicasets and ensure desired number of pods are available all time within the set.
 There are various controllers which are packaged inside a single process known as - Kubernetes Controller Manager
-To check kube apiserver as pod - kubectl get pods -n kube-system
+To check kube controller as pod - kubectl get pods -n kube-system
 The pod definition file is located at - /etc/kubernetes/manifests/kube-controller-manager.yaml
 Incase of non kubeadm setup - etc/systemd/system/kube-controller-manager.service
 To check for running processes - ps aux | grep kube-controller-manager
@@ -37,7 +37,7 @@ Only responsible for deciding - Which pod goes on which node. Does not actually 
 Decides which node has sufficient capacity to accomodate the following pods. 
 Depends upon certain criteria like , scheduler prioritizes the node which will be left with more number of resources even after scheduling the pod.
 Other criteria include- Resource requirements and limits, Taints and toleration, Node selectors and Affinity.
-To check kube apiserver as pod - kubectl get pods -n kube-system
+To check kube scheduler as pod - kubectl get pods -n kube-system
 The pod definition file is located at - /etc/kubernetes/manifests/kube-scheduler.yaml
 Incase of non kubeadm setup - etc/systemd/system/kube-scheduler.service
 To check for running processes - ps aux | grep kube-scheduler
@@ -54,6 +54,21 @@ Monitors nodes and pods and sends report/status to Kube Apiserver timely basis.
 Kubelet is always installed manually and not directly from binaries.
 To check for running processes - ps aux | grep kubelet
 
+KUBE PROXY
+In order to make services accessible throughout the cluster , kube proxy is used and is installed on every node.
+It is Responsible to create rules on each pod everytime a new service is created  to forward the traffic to that service.
+It does this using iptables rules.
+To check kubeproxy as pod - kubectl get pods -n kube-system
+
+PODS
+Containers are not deployed directly in kubernetes. They are encapsulated in a kubernetes objects called pods.
+Its a single instance of an application and smallest object in a k8s cluster.
+If load increases, a new pod with a container is deployed / a new node with a new pod is deployed within the cluster. 
+Scaling up will spin more pods and scaling down with remove pods.
+A pod can contains two containers of different types but not of similar types.
+With pod we are not required to set up any thing and it establishes all the network connectivity itself when a seperate container is created inside a pod and hence pods is considered even with a single container so that its easy to scale in case of future architectural changes.
+To deploy a pod - kubectl run pod nginx --image nginx
+List pod - kubectl get pods
 
 
 
