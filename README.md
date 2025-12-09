@@ -70,13 +70,74 @@ With pod we are not required to set up any thing and it establishes all the netw
 To deploy a pod - kubectl run pod nginx --image nginx
 List pod - kubectl get pods
 
+K8s Pod Definition File - pod.yaml
+apiVersion: v1 
+kind: Pod 
+metadata:
+  name: myapp
+  labels:
+      app: myapp-pod
+      type: frontend
+spec:
+  containers:
+    - name: nginx-cont
+      image: nginx
+To create a new pod definition file - kubectl create -f pod.yaml / kubectl apply -f pod.yaml 
+To get detail info of a pod - kubectl describe pod podname
+To delete a pod - kubectl delete pod podname
+To edit a pod - kubectl edit pod pod name ; Apply changes - kubectl apply -f pod.yaml
+To edit a pod created via vi, vim or nano tool - vim podyamlfile ; Apply changes - kubectl apply -f pod.yaml
 
+REPLICATION CONTROLLER & REPLICASETS
+Helps to prevent downtime by maintaining the desired number of pods at all times for high availability.
+It can also replace an existing unhealthy pod if the desired number of pod is just 1.
+It is also responsible for load balancing and scaling across multiple pods as well as multiple nodes in case of increasing load.
 
+Replication-controller definition file - rc.yaml
+apiVersion: v1 
+kind: ReplicationController
+metadata:
+  name: myapp-rc
+  labels:
+      app: myapp
+      type: frontend
+spec:
+  template: #template block to define the pod definition file for which replications will be created.
+     metadata:
+       name: myapp
+       labels:
+          app: myapp-pod
+          type: frontend
+     spec:
+       containers:
+         - name: nginx-cont
+           image: nginx
+  replicas: 3 #number of replicas
 
+To create a replication controller definition file - kubectl create -f rc.yaml
+To list replicasets - kubectl get replicationcontroller
 
-
-
-
+ReplicaSet definition file - rs.yaml
+apiVersion: apps/v1 
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+      app: myapp
+      type: frontend
+spec:
+  template: #template block to define the pod definition file for which replications will be created.
+     metadata:
+       name: myapp
+       labels:
+          app: myapp-pod
+          type: frontend
+     spec:
+       containers:
+         - name: nginx-cont
+           image: nginx
+  replicas: 3 #number of replicas
+  selector:  #helps replicaset identify what pods falls under it
 
 
 
