@@ -137,7 +137,22 @@ spec:
          - name: nginx-cont
            image: nginx
   replicas: 3 #number of replicas
-  selector:  #helps replicaset identify what pods falls under it
+  selector: #helps replicaset identify what pods falls under it
+     matchLabels:
+        type: frontend
+To update a replicaset - kubectl scale --replicas=6 rs.yaml
+Another way is to update the yaml file and run - kubectl replace -f rs.yaml ; to replace the replicaset
+
+DEPLOYMENT
+Responsible for:
+Deploying multiple instances of webserver
+To update multiple docker instances seamlessly using rolling update strategy
+To carry out easy rollbacks incase of bugs and issues seamlessly altogether.
+To make changes to application running on multiple docker instances
+
+Pod help us deploying the single instance of our application; replicaset
+
+
 
 
 
