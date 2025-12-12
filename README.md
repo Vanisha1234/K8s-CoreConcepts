@@ -182,6 +182,9 @@ Replicaset automatically created pods hence run - kubectl get pods; to list the 
 To list all the created objects at one run - kubectl get all 
 
 SERVICES
+Enables Communication between various components within and outside the application; like connects frontend with backend pods
+Helps connect different applications and users
+Services enabling loose coupling between microservices in our application
 
 
 
