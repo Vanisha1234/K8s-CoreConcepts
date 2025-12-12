@@ -150,11 +150,38 @@ To update multiple docker instances seamlessly using rolling update strategy
 To carry out easy rollbacks incase of bugs and issues seamlessly altogether.
 To make changes to application running on multiple docker instances
 
-Pod help us deploying the single instance of our application; replicaset
+Pod help us deploying the single instance of our application; replicaset help us deploy mutliple pods; deployment allow us to upgrade the underlying instances seamlessly
+Deployment definition file - (Similar to replicaset just the kind changes)
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: myapp-replicaset
+  labels:
+      app: myapp
+      type: frontend
+spec:
+  template: 
+     metadata:
+       name: myapp
+       labels:
+          app: myapp-pod
+          type: frontend
+     spec:
+       containers:
+         - name: nginx-cont
+           image: nginx
+  replicas: 3 #number of replicas
+  selector: 
+     matchLabels:
+        type: frontend
 
+To create a deployment - kubectl create -f deployment.yaml
+To list deployments - kubectl get deployments
+Deployment automatically creates a replicaset hence run - kubectl get replicaset; to list replicaset created
+Replicaset automatically created pods hence run - kubectl get pods; to list the running pods
+To list all the created objects at one run - kubectl get all 
 
-
-
+SERVICES
 
 
 
