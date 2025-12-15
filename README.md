@@ -186,6 +186,63 @@ Enables Communication between various components within and outside the applicat
 Helps connect different applications and users
 Services enabling loose coupling between microservices in our application
 
+In case of external communication
+If we need to communicate with the application hosted on a pod, from outside the K8s cluster, we can use services insted on logging into the Node and then accessing.
+Since usecase of services include- listening on the port of the node and then forwarding requests to the port on the pod hosting the application. This type of service is known as node port service.
+Target port - The port on the pod; where the service forwards the request to.
+Port - The port on the service itself; the service has a virtual IP assigned to it known as cluster IP.
+NodePort - The port on the node. Node port has a range : 30000 - 32767
+
+Service Definition File of type NodePort- svc.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  type: NodePort #type of service
+  ports:
+    - targetPort: 80 #if targetPort is not provided, it will automatically pick up the same port of the port.
+      port: 80 #this is important to provide
+      nodePort: 30008 #if not provide, will be automatically set to any port between the valid range
+  selector: #labels and selectors will be used to link the service to the pod to which the request is to be forwarded
+      app: myapp
+      type: frontend
+
+To create a service - kubectl create -f svc.yml
+To list the services - kubectl get services
+To describe a service - kubectl describe service serviceName
+We can now browse the application using the IP of the Node and the Port on the Node.
+
+Cluster Ip type of service- Virtual Ip created inside the cluster used to enable communication between different services like set of frontend servers communicating to set of backend services
+In case of various services running for eg set of frontend webservers and set of backen webservers; both needs to commnicate with each other but ips of pods are not static and may change if a pod is replaced hence it is not reliable for internal communication.
+Secondly it becomes difficult to decide which pod instance to forward traffic to when all are same.
+Hence this service helps in grouping the same pods together and provide a single interface to communicate.
+Each service is assigned a name and the ip which will be used by pods for communication.
+
+Service definition file of type Cluster IP- svc.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: ClusterIP #if type of service is not specified;this is the default svc type
+  ports:
+    - targetPort: 80 #port where backend is exposed
+      port: 80 
+  selector: #to link svc to backend pods
+      app: myapp
+      type: backend
+
+The svc can be accessed by the pods using the clusterIP or the service name.
+
+Load balancer type of service- Helps to distribute load across various webservers
+In case of multiple pod instances running of the same application , each pod has same labels which is used in Load balancer service to link all the pods with same labels.
+Once the pods are linked using labels, the service then automatically use all the pods as the endpoints to forward the request.
+This service acts as a built in loadbalancer to distribute load.
+
+In case of pods present in different nodes inside the cluster; no additional configuration is required; k8s automatically spans across the nodes in the cluster and map the target port to the same nodePort on all the nodes in the cluster. This way the application can be access through any ip and the same port.
+Services are automatically updated if pos are added or removed.
+
 
 
 
