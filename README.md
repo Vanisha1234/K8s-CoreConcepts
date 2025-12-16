@@ -280,6 +280,14 @@ spec:
     
  To create resource quota via definition file - kubectl create -f rq.yaml     
   
+IMPERATIVE & DECLARATIVE
+Imperative Approach means specifying what and how to do.
+Declarative Approach means specifying what to do instead of specifying the details. The rest is handled by the system itself.
+
+Example of Imperative Approach
+
+
+Examples of Declarative Approach
 
 
 
