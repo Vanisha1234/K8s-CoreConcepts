@@ -259,6 +259,26 @@ metadata:
 
 To create using definition file - kubectl create -f ns.yml
 To create directly without creating def. file - kubectl create namespace dev
+To avoid specifying ns repeatedly while running commands use - kubectl config set-context $(kubectl config current-context) --namespace=dev
+To view pod in all the namespaces - kubectl get pods --all-namespaces
+
+To limit resources of a namespace like cpu or memory usage; create a resource quota
+Resource Quota definition file - rq.yaml
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: dev
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: 5Gi
+    limits.cpu: "10"
+    limits.memory: 10 Gi
+    
+ To create resource quota via definition file - kubectl create -f rq.yaml     
   
 
 
