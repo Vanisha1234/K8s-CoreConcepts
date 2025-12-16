@@ -243,6 +243,25 @@ This service acts as a built in loadbalancer to distribute load.
 In case of pods present in different nodes inside the cluster; no additional configuration is required; k8s automatically spans across the nodes in the cluster and map the target port to the same nodePort on all the nodes in the cluster. This way the application can be access through any ip and the same port.
 Services are automatically updated if pos are added or removed.
 
+NAMESPACES
+An isolated environment that contains all the services like pods, svcs and deployments. There can be various namespaces like dev, prod and test. To isolate these environments namespaces are created so that users dont end up accidently making changes to another environment.
+The resources within the namespace can refer to each other by their names.
+To connect to service in the another namespace for eg - connection web pod to db pod in another namespace; we need to use - servicename.namespace.svc.cluster.local
+To list the pods in a specific namespace - kubectl get pods --namespace=kube-system
+To create a pod in a specific namespace - kubectl create -f pod.yml --namespace=blue-namespace
+To avoid using namespaces in commands repeatedly, define namespace under metadata of the pod definition file.
+
+Namespace definition file- ns.yml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+
+To create using definition file - kubectl create -f ns.yml
+To create directly without creating def. file - kubectl create namespace dev
+  
+
+
 
 
 
