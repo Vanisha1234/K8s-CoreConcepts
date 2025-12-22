@@ -70,6 +70,24 @@ ps aux | grep kube-apiserver
 
 ## KUBE CONTROLLER MANAGER
 
+### Overview
+- A process that **continuously monitors the state** of various components in a Kubernetes cluster
+- Works towards bringing the system to the **desired functioning state**
+- Multiple controllers are **packaged into a single process** known as the **Kubernetes Controller Manager**
+### Example Controllers
+#### Node Controller
+- Responsible for monitoring the **status of nodes**
+- Takes necessary actions to keep applications running
+- Receives node status updates via the **Kube-API Server**
+- If there is **no response for more than 40 seconds**, the node is marked as **Unreachable**
+- If the node remains unreachable for **more than 5 minutes**, the workloads are **replaced** on healthy nodes
+#### Replication Controller
+- Responsible for monitoring the **status of ReplicaSets**
+- Ensures the **desired number of pods** are available at all times within the set
+### Controller Packaging
+- Various controllers run together inside a **single binary**
+- This unified process is called the **Kubernetes Controller Manager**
+
 Its a process that continuously monitors the state of various components in a cluster and work towards bring the system to the desired functioning state.
 Eg - 
 Node Controller - It is responsible for monitoring the status of the nodes and take necessary actions to keep the application running. It recieves node status via Kube apiserver. If there is no response from the node for more than 40 seconds, it marks it as unreachable and in case the node in unreachable for more than 5 mins ,it replaces it.
