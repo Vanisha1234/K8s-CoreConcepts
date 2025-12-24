@@ -88,16 +88,31 @@ ps aux | grep kube-apiserver
 - Various controllers run together inside a **single binary**
 - This unified process is called the **Kubernetes Controller Manager**
 
-Its a process that continuously monitors the state of various components in a cluster and work towards bring the system to the desired functioning state.
-Eg - 
-Node Controller - It is responsible for monitoring the status of the nodes and take necessary actions to keep the application running. It recieves node status via Kube apiserver. If there is no response from the node for more than 40 seconds, it marks it as unreachable and in case the node in unreachable for more than 5 mins ,it replaces it.
+Running as a Pod (kubeadm setup)
+```bash
+kubectl get pods -n kube-system
+```
+Pod Manifest Location
+```bash
+/etc/kubernetes/manifests/kube-controller-manager.yaml
+```
+Non-kubeadm Setup (Systemd)
+```bash
+/etc/systemd/system/kube-controller-manager.service
+```
+Verify Running Process
+```bash
+ps aux | grep kube-controller-manager
+```
 
-Replication Controller - Reponsible for monitoring the status of the replicasets and ensure desired number of pods are available all time within the set.
-There are various controllers which are packaged inside a single process known as - Kubernetes Controller Manager
-To check kube controller as pod - kubectl get pods -n kube-system
-The pod definition file is located at - /etc/kubernetes/manifests/kube-controller-manager.yaml
-Incase of non kubeadm setup - etc/systemd/system/kube-controller-manager.service
-To check for running processes - ps aux | grep kube-controller-manager
+
+
+
+
+
+
+
+
 
 KUBE SCHEDULER
 Only responsible for deciding - Which pod goes on which node. Does not actually place the pod on a node.
