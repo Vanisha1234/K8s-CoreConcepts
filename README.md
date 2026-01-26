@@ -27,6 +27,7 @@ A comprehensive guide to **Kubernetes core concepts**, components, objects, and 
 - Cluster metadata
   
 > ✅ A change is considered complete **only after it is written to ETCD**
+### Operational Commands
 
 To check etcd as pod 
 ```bash
@@ -48,6 +49,7 @@ kubectl get pods -n kube-system
 - Retrieve cluster data
 - Update ETCD
 - Used by **Scheduler** and **Kubelet** to update cluster state
+### Operational Commands
 
 Running as a Pod (kubeadm setup)
 ```bash
@@ -87,6 +89,7 @@ ps aux | grep kube-apiserver
 ### Controller Packaging
 - Various controllers run together inside a **single binary**
 - This unified process is called the **Kubernetes Controller Manager**
+### Operational Commands
 
 Running as a Pod (kubeadm setup)
 ```bash
@@ -104,43 +107,134 @@ Verify Running Process
 ```bash
 ps aux | grep kube-controller-manager
 ```
+---
+
+## KUBE SCHEDULER
+
+### Overview
+- Responsible only for deciding which pod goes on which node.
+- It does not actually place the pod on a node; it simply selects the best candidate.
+- Decides which node has sufficient capacity to accommodate incoming pods.
+### Scheduling Logic & Criteria
+The scheduler evaluates nodes based on specific logic to ensure optimal placement:
+- Resource Prioritization: The scheduler prioritizes the node that will be left with the highest number of available resources even after scheduling the pod.
+- Filtering Criteria:
+  - Resource Requirements and Limits: Ensures the node meets CPU/Memory requests.
+  - Taints and Tolerations: Respects node restrictions.
+  - Node Selectors and Affinity: Matches pods to specific node labels or groups.
+### Operational Commands
+
+Running as a Pod (kubeadm setup) \
+To check the kube-scheduler status when running as a static pod:
+```bash
+kubectl get pods -n kube-system
+```
+Manifest and Service Locations \
+Depending on your installation method, the configuration is found at: \
+Pod Definition File:
+```bash
+/etc/kubernetes/manifests/kube-scheduler.yaml
+```
+Non-kubeadm Setup (Systemd):
+```bash
+/etc/systemd/system/kube-scheduler.service
+```
+Verify Running Process \
+To check for the active scheduler process on the host:
+```bash
+ps aux | grep kube-scheduler
+```
+
+---
+
+## KUBELET
+
+### Overview
+- Acts as the sole point of contact between the worker node and the master node.
+- The Kubelet on the worker node is responsible for registering the node with the Kubernetes cluster.
+- Unlike other components, the Kubelet is always installed manually and not typically run as a container from binaries.
+### Responsibilities
+The Kubelet manages the lifecycle of pods and maintains communication with the control plane:
+- Container Management: Responsible for the loading and unloading of containers.
+- Execution Flow:
+  - Receives instructions to load a container/pod on a worker node.
+  - Requests the Container Runtime (present on the worker node) to pull the necessary image and run the container.
+- Monitoring & Reporting:
+  - Monitors the health of both nodes and pods.
+  - Sends status reports and updates to the Kube-API Server on a timely basis.
+### Operational Commands
+
+Since the Kubelet runs as a system service rather than a pod, you can check its status using the following command:
+```bash
+ps aux | grep kubelet
+```
+
+---
+
+## KUBE PROXY
+
+### Overview
+- In order to make services accessible throughout the cluster, kube-proxy is used and is installed on every node.
+- It is responsible for creating rules on each node every time a new service is created to forward the traffic to that service.
+> Kube-proxy manages the network traffic flow by interacting with the node's networking stack:
+- It dynamically updates the networking rules to ensure traffic destined for a Service reaches the correct Pod.
+- It primarily performs these updates using iptables rules.
+### Operational Commands
+
+In most clusters (like those set up with kubeadm), kube-proxy runs as a DaemonSet with a pod on every node. You can verify its status using:
+```bash
+kubectl get pods -n kube-system
+```
+
+---
+
+## PODS
+
+### Overview
+- Containers are not deployed directly in Kubernetes; they are encapsulated into Kubernetes objects called Pods.
+- A Pod represents a single instance of an application and is the smallest object in a Kubernetes cluster.
+- If load increases, a new pod with a container is deployed, or a new node with a new pod is added to the cluster.
+  - Scaling up spins up more pods, while scaling down removes them.
+- A pod can contain two containers of different types, but generally not of similar types.
+- Pods establish all network connectivity automatically when a separate container is created inside them. Even with a single container, pods are used to ensure easy scaling for future architectural changes.
+### Basic Commands
+To deploy a pod:
+```bash
+kubectl run nginx --image nginx
+```
+List Pods:
+```bash
+kubectl get pods
+```
+Detailed Info about a Pod:
+```bash
+kubectl describe pod <pod-name>
+```
+To delete a Pod:
+```bash
+kubectl delete pod <pod-name>
+```
+### Pod Definition File
+Kubernetes objects are typically defined using YAML files for declarative management:
+```bash
+apiVersion: v1 
+kind: Pod 
+metadata:
+  name: myapp
+  labels:
+      app: myapp-pod
+      type: frontend
+spec:
+  containers:
+    - name: nginx-cont
+      image: nginx
+```
 
 
 
 
 
 
-
-
-
-
-KUBE SCHEDULER
-Only responsible for deciding - Which pod goes on which node. Does not actually place the pod on a node.
-Decides which node has sufficient capacity to accomodate the following pods. 
-Depends upon certain criteria like , scheduler prioritizes the node which will be left with more number of resources even after scheduling the pod.
-Other criteria include- Resource requirements and limits, Taints and toleration, Node selectors and Affinity.
-To check kube scheduler as pod - kubectl get pods -n kube-system
-The pod definition file is located at - /etc/kubernetes/manifests/kube-scheduler.yaml
-Incase of non kubeadm setup - etc/systemd/system/kube-scheduler.service
-To check for running processes - ps aux | grep kube-scheduler
-
-
-KUBELET
-Sole point of contact between the worker node and the master node
-Reponsible for-
-loading and unloading containers
-send reports of containers status
-kubelet in worker node registers the node with kubernetes cluster
-It recieves instruction to load a container/pod on a worker node which later requests the container runtime present on the worker node to pull image and run container.
-Monitors nodes and pods and sends report/status to Kube Apiserver timely basis.
-Kubelet is always installed manually and not directly from binaries.
-To check for running processes - ps aux | grep kubelet
-
-KUBE PROXY
-In order to make services accessible throughout the cluster , kube proxy is used and is installed on every node.
-It is Responsible to create rules on each pod everytime a new service is created  to forward the traffic to that service.
-It does this using iptables rules.
-To check kubeproxy as pod - kubectl get pods -n kube-system
 
 PODS
 Containers are not deployed directly in kubernetes. They are encapsulated in a kubernetes objects called pods.
