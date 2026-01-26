@@ -229,40 +229,39 @@ spec:
     - name: nginx-cont
       image: nginx
 ```
+### Managing Pod Configurations
+To deploy from a pod definition file:
+```bash
+kubectl create -f pod.yaml
+```
+Or
+```bash
+kubectl apply -f pod.yaml
+```
+
+To change a running pod directly:
+```bash
+kubectl edit pod <pod-name>
+```
+After saving, apply changes using:
+```bash
+kubectl apply -f pod.yaml
+```
+
+To edit a pod created via vi, vim or nano tool:
+```bash
+vim pod.yaml
+```
+Apply changes:
+```bash
+kubectl apply -f pod.yaml
+```
 
 
 
 
 
 
-
-PODS
-Containers are not deployed directly in kubernetes. They are encapsulated in a kubernetes objects called pods.
-Its a single instance of an application and smallest object in a k8s cluster.
-If load increases, a new pod with a container is deployed / a new node with a new pod is deployed within the cluster. 
-Scaling up will spin more pods and scaling down with remove pods.
-A pod can contains two containers of different types but not of similar types.
-With pod we are not required to set up any thing and it establishes all the network connectivity itself when a seperate container is created inside a pod and hence pods is considered even with a single container so that its easy to scale in case of future architectural changes.
-To deploy a pod - kubectl run pod nginx --image nginx
-List pod - kubectl get pods
-
-K8s Pod Definition File - pod.yaml
-apiVersion: v1 
-kind: Pod 
-metadata:
-  name: myapp
-  labels:
-      app: myapp-pod
-      type: frontend
-spec:
-  containers:
-    - name: nginx-cont
-      image: nginx
-To create a new pod definition file - kubectl create -f pod.yaml / kubectl apply -f pod.yaml 
-To get detail info of a pod - kubectl describe pod podname
-To delete a pod - kubectl delete pod podname
-To edit a pod - kubectl edit pod pod name ; Apply changes - kubectl apply -f pod.yaml
-To edit a pod created via vi, vim or nano tool - vim podyamlfile ; Apply changes - kubectl apply -f pod.yaml
 
 REPLICATION CONTROLLER & REPLICASETS
 Helps to prevent downtime by maintaining the desired number of pods at all times for high availability.
